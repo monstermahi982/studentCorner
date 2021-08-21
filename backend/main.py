@@ -4,8 +4,13 @@ from typing import Optional
 from fastapi import FastAPI
 from pydantic import BaseModel
 import datetime
+# from routes.user import user
+from schemas.user import userEntity, usersEntity
 
 app = FastAPI()
+
+# app.include_router(user)
+
 client = MongoClient('localhost', 27017)
 db = client['studentCorner']
 collection = db['student']
@@ -13,50 +18,44 @@ collection = db['student']
 
 class Student(BaseModel):
     name: str
-    email: str
     age: int
-    year: int
-    password: str
-    date: str
+    rollno: int
+    gender: str
 
 
 class UpdateStudent(BaseModel):
     name: Optional[str]
-    email: Optional[str]
     age: Optional[int]
-    year: Optional[int]
-    password: Optional[str]
-    date: str
-
-
-def student_helper(student) -> dict:
-    return {
-        "id": str(student["_id"]),
-        "name": student["name"],
-        "age": student["age"],
-        "gender": student["gender"],
-        "rollno": student["rollno"],
-    }
+    roll: Optional[int]
+    gender: Optional[str]
 
 
 @app.get("/student")
 def fetch_all_student():
-    Studentdata = []
-    for data in collection.find():
-        Studentdata.append(student_helper(data))
-    return {"date": data}
+    return usersEntity(collection.find())
 
 
 @app.get("/student/{id}")
 def fetch_one_student(id):
-    return {"Hello": f"this is number {id}"}
+    return userEntity(collection.find_one({"_id": ObjectId(id)}))
 
 
 @app.post('/student')
 async def addStudent(request: Student):
-    return {"data": request}
+    collection.insert_one(dict(request))
+    return {"data": "success"}
 
 
 @app.put('/student/{id}')
 def UpdateStudent(request: UpdateStudent, id):
-    return {"data": request}
+    collection.find_one_and_update({"_id": ObjectId(id)}, {
+        "$set": dict(request)
+    })
+    return userEntity(collection.find_one({"_id": ObjectId(id)}))
+
+
+@app.delete("/student/{id}")
+def student_delete(id):
+    collection.find_one_and_delete(
+        {"_id": ObjectId(id)})
+    return {"data": "deleted"}
