@@ -5,8 +5,9 @@ from typing import Optional
 from fastapi import FastAPI, File, UploadFile
 from pydantic import BaseModel
 import datetime
-from schemas.user import userEntity, usersEntity
+from schemas.user import userEntity, usersEntity, userPassword
 from fastapi.staticfiles import StaticFiles
+from models.Student import UpdateStudent, AddStudent, UpdatePassword
 
 # initialize
 app = FastAPI()
@@ -20,50 +21,49 @@ client = MongoClient('localhost', 27017)
 db = client['studentCorner']
 collection = db['student']
 
-# class models
-
-
-class Student(BaseModel):
-    name: str
-    age: int
-    rollno: int
-    gender: str
-
-
-class UpdateStudent(BaseModel):
-    name: Optional[str]
-    age: Optional[int]
-    roll: Optional[int]
-    gender: Optional[str]
-
 
 # routes
-@app.get("/student")
-def fetch_all_student():
+@app.get("/students")
+async def fetch_all_student():
     return usersEntity(collection.find())
 
 
 @app.get("/student/{id}")
-def fetch_one_student(id):
+async def fetch_one_student(id):
     return userEntity(collection.find_one({"_id": ObjectId(id)}))
 
 
 @app.post('/student')
-async def addStudent(request: Student):
-    collection.insert_one(dict(request))
-    return {"data": "success"}
+async def addStudent(student: AddStudent):
+    collection.insert_one(dict(student))
+    return {"data": student}
 
 
 @app.put('/student/{id}')
-def UpdateStudent(request: UpdateStudent, id):
+async def UpdateStudent(student: UpdateStudent, id):
     collection.find_one_and_update({"_id": ObjectId(id)}, {
-        "$set": dict(request)
+        "$set": dict(student)
+    })
+    return userEntity(collection.find_one({"_id": ObjectId(id)}))
+
+
+@app.put('/student/profile/{id}')
+async def UpdateStudentProfile(id, file: UploadFile = File(...)):
+    contents = await file.read()
+    filePath = os.path.join(path, file.filename)
+    with open(filePath, 'wb+') as f:
+        f.write(contents)
+        f.close()
+    collection.find_one_and_update({"_id": ObjectId(id)}, {
+        "$set": {
+            "image": "static/"+file.filename
+        }
     })
     return userEntity(collection.find_one({"_id": ObjectId(id)}))
 
 
 @app.delete("/student/{id}")
-def student_delete(id):
+async def student_delete(id):
     collection.find_one_and_delete(
         {"_id": ObjectId(id)})
     return {"data": "deleted"}
@@ -77,3 +77,17 @@ async def create_upload_file(file: UploadFile = File(...)):
         f.write(contents)
         f.close()
     return {"filename": "static/"+file.filename}
+
+
+@app.post('/updatepassword/{id}')
+def UpdatePassword(id, student: UpdatePassword):
+    data = userPassword(collection.find_one({"_id": ObjectId(id)}))
+    if(data['password'] == student.oldPassword):
+        collection.find_one_and_update({"_id": ObjectId(id)}, {
+            "$set": {
+                "password": student.newPassword
+            }
+        })
+        return {"data": "password updated"}
+    else:
+        return {"data": "wrong password"}
