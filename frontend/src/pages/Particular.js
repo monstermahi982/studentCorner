@@ -8,7 +8,7 @@ import logo from '../amol.jpeg'
 import Button from '@material-ui/core/Button';
 import Box from '@material-ui/core/Box';
 
-const Profile = () => {
+const Particular = () => {
     return (
         <>
             <Container>
@@ -28,25 +28,12 @@ const Profile = () => {
                             </Grid>
                         </Grid>
                         <h3 style={{ textAlign: 'center' }}>Email :- maheshgaikwad8892@gmail.com</h3>
-                        <Grid container>
-                            <Grid item xs={6} sm={6} style={{ display: 'grid', justifyContent: 'right', alignContent: 'center' }}>
-                                <Button variant="outlined" color="secondary">
-                                    Delete
-                                </Button>
-                            </Grid>
-                            <Grid item xs={6} sm={6} style={{ display: 'grid', justifyContent: 'left', alignContent: 'center' }}>
-                                <Button variant="outlined" color="primary">
-                                    Update
-                                </Button>
-                            </Grid>
-                        </Grid>
                     </Grid>
                     <Grid item xs={0} sm={3}></Grid>
                 </Grid>
             </Container>
-
         </>
     )
 }
 
-export default Profile
+export default Particular
