@@ -8,9 +8,26 @@ import datetime
 from schemas.user import userEntity, usersEntity, userPassword
 from fastapi.staticfiles import StaticFiles
 from models.Student import UpdateStudent, AddStudent, UpdatePassword
+from fastapi.middleware.cors import CORSMiddleware
 
 # initialize
 app = FastAPI()
+
+# added cor
+origins = [
+    "http://localhost",
+    "http://localhost:8000",
+    "http://localhost:3000",
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 
 # file uploads
 app.mount("/static", StaticFiles(directory="static"), name="static")

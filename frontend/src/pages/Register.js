@@ -20,6 +20,20 @@ const Register = () => {
     const handleChange = (event) => {
         setAge(event.target.value);
     };
+
+    const [name, setName] = React.useState('')
+    const [email, setEmail] = React.useState('')
+    const [password, setPassword] = React.useState('')
+    const [image, setImage] = React.useState()
+
+    const submitForm = () => {
+        console.log(email + " " + name);
+        const formData = new FormData()
+        formData.append(name, name)
+        formData.append(email, email)
+        formData.append(password, password)
+        formData.append(image, profile)
+    }
     return (
         <>
             <Container>
@@ -35,6 +49,8 @@ const Register = () => {
                                     label="Name"
                                     variant="outlined"
                                     style={{ margin: '20px' }}
+                                    value={name}
+                                    onChange={(e) => setName(e.target.value)}
                                 />
                             </Grid>
                             <Grid sm={12} sm={6} style={{ display: 'grid', justifyContent: 'center', alignContent: 'center' }}>
@@ -44,6 +60,8 @@ const Register = () => {
                                     label="Email"
                                     variant="outlined"
                                     style={{ margin: '20px' }}
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
                                 />
                             </Grid>
                         </Grid>
@@ -55,6 +73,8 @@ const Register = () => {
                                     label="Password"
                                     variant="outlined"
                                     style={{ margin: '20px' }}
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
                                 />
                             </Grid>
                             <Grid sm={12} sm={6} style={{ display: 'grid', justifyContent: 'center', alignContent: 'center' }}>
@@ -76,6 +96,7 @@ const Register = () => {
                                     variant="outlined"
                                     style={{ margin: '20px' }}
                                     type="file"
+                                    onChange={(e) => setImage(e.target.files[0])}
                                 />
                             </Grid>
                             <Grid sm={12} sm={6} style={{ display: 'grid', justifyContent: 'center', alignContent: 'center' }}>
@@ -92,9 +113,9 @@ const Register = () => {
                                         <MenuItem value="">
                                             <em>None</em>
                                         </MenuItem>
-                                        <MenuItem value={10}>MALE</MenuItem>
-                                        <MenuItem value={20}>FEMALE</MenuItem>
-                                        <MenuItem value={30}>OTHER</MenuItem>
+                                        <MenuItem >MALE</MenuItem>
+                                        <MenuItem >FEMALE</MenuItem>
+                                        <MenuItem >OTHER</MenuItem>
                                     </Select>
                                 </FormControl>
                             </Grid>
@@ -106,7 +127,7 @@ const Register = () => {
                                 </Button></Link>
                             </Grid>
                             <Grid item xs={6} sm={6} style={{ display: 'grid', justifyContent: 'left', alignContent: 'center' }}>
-                                <Button variant="outlined" color="primary">
+                                <Button variant="outlined" onClick={submitForm} color="primary">
                                     Register
                                 </Button>
                             </Grid>

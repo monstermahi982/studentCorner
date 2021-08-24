@@ -7,8 +7,10 @@ import CardMedia from '@material-ui/core/CardMedia';
 import logo from '../amol.jpeg'
 import Button from '@material-ui/core/Button';
 import Box from '@material-ui/core/Box';
+import { useParams } from 'react-router-dom'
 
 const Particular = () => {
+    let id = useParams();
     return (
         <>
             <Container>
