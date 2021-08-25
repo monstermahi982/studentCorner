@@ -14,11 +14,12 @@ import InputLabel from '@material-ui/core/InputLabel';
 import FormControl from '@material-ui/core/FormControl';
 import Input from '@material-ui/core/Input';
 import { Link } from 'react-router-dom'
+import axios from 'axios'
 
 const Register = () => {
-    const [age, setAge] = React.useState('');
+    const [gender, setGender] = React.useState('');
     const handleChange = (event) => {
-        setAge(event.target.value);
+        setGender(event.target.value);
     };
 
     const [name, setName] = React.useState('')
@@ -27,12 +28,12 @@ const Register = () => {
     const [image, setImage] = React.useState()
 
     const submitForm = () => {
-        console.log(email + " " + name);
-        const formData = new FormData()
-        formData.append(name, name)
-        formData.append(email, email)
-        formData.append(password, password)
-        formData.append(image, profile)
+        axios.post('http://localhost:8000/student', {
+            name: name,
+            email: email,
+            password: password,
+            gender: gender
+        }).then((data) => console.log(data.data))
     }
     return (
         <>
@@ -105,7 +106,7 @@ const Register = () => {
                                     <Select
                                         labelId="demo-simple-select-outlined-label"
                                         id="demo-simple-select-outlined"
-                                        value={age}
+                                        value={gender}
                                         onChange={handleChange}
                                         label="Gender"
 
@@ -113,9 +114,9 @@ const Register = () => {
                                         <MenuItem value="">
                                             <em>None</em>
                                         </MenuItem>
-                                        <MenuItem >MALE</MenuItem>
-                                        <MenuItem >FEMALE</MenuItem>
-                                        <MenuItem >OTHER</MenuItem>
+                                        <MenuItem value="male">MALE</MenuItem>
+                                        <MenuItem value="female">FEMALE</MenuItem>
+                                        <MenuItem value="other">OTHER</MenuItem>
                                     </Select>
                                 </FormControl>
                             </Grid>
