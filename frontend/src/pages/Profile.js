@@ -1,43 +1,27 @@
 import React from 'react'
 import Container from '@material-ui/core/Container'
 import Grid from '@material-ui/core/Grid'
-import { makeStyles } from '@material-ui/core/styles';
-import Paper from '@material-ui/core/Paper';
-import CardMedia from '@material-ui/core/CardMedia';
-import logo from '../amol.jpeg'
 import Button from '@material-ui/core/Button';
-import Box from '@material-ui/core/Box';
 import axios from 'axios'
 import TextField from '@material-ui/core/TextField';
-
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import ListItemText from '@material-ui/core/ListItemText';
 import Avatar from '@material-ui/core/Avatar';
 import IconButton from '@material-ui/core/IconButton';
-import FormGroup from '@material-ui/core/FormGroup';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Checkbox from '@material-ui/core/Checkbox';
-// import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
-import FolderIcon from '@material-ui/icons/Folder';
-import DeleteIcon from '@material-ui/icons/RemoveRedEye';
+import RemoveRedEye from '@material-ui/icons/RemoveRedEye';
 import { useHistory } from "react-router-dom";
 import Alert from '@material-ui/lab/Alert';
 import Snackbar from '@material-ui/core/Snackbar';
-import MuiAlert from '@material-ui/lab/Alert';
 import LinearProgress from '@material-ui/core/LinearProgress';
+import EditIcon from '@material-ui/icons/Edit';
+import DeleteIcon from '@material-ui/icons/Delete';
+import ExitToAppIcon from '@material-ui/icons/ExitToApp';
+import { userContext } from '../App'
 
-function generate(element) {
-    return [0, 1, 2].map((value) =>
-        React.cloneElement(element, {
-            key: value,
-        }),
-    );
-}
 
 const Profile = () => {
     const [userList, setUserList] = React.useState([])
@@ -46,7 +30,8 @@ const Profile = () => {
     const [load, setLoad] = React.useState(false)
     const [fileUpload, setFileUpload] = React.useState(false)
     let history = useHistory();
-
+    const { dispatch } = React.useContext(userContext)
+    const userId = sessionStorage.getItem('userId')
     const imageUploadstatus = () => {
         setFileUpload(!fileUpload)
     }
@@ -55,26 +40,27 @@ const Profile = () => {
     React.useEffect(async () => {
         const userData = await axios.get('http://localhost:8000/students')
         setUserList(userData.data)
+        return { userData }
     }, [])
 
     // console.log(list);
     // fetching user profile
     React.useEffect(async () => {
-        const profileData = await axios.get('http://localhost:8000/student/6121f092b0a99b35de65334d')
+        const profileData = await axios.get('http://localhost:8000/student/' + userId)
         setData(profileData.data)
+        return { profileData }
     }, [image])
 
     const imageUpload = (e) => {
         setLoad(true)
         const formData = new FormData()
         formData.append('file', e.target.files[0])
-        fetch('http://localhost:8000/student/profile/6121f092b0a99b35de65334d', {
+        fetch('http://localhost:8000/student/profile/' + userId, {
             method: "put",
             body: formData
         })
             .then((response) => response.json())
             .then((data) => {
-                console.log(data);
                 setImage(!image)
                 setLoad(false)
                 imageUploadstatus()
@@ -89,9 +75,16 @@ const Profile = () => {
         history.push('/student/' + e.target.id)
     }
 
+    const logout = () => {
+        setLoad(true)
+        sessionStorage.clear()
+        dispatch({ type: "USER", payload: false })
+        setLoad(false)
+    }
+
     return (
         <>
-            <Container style={{ marginTop: '20px' }}>
+            <Container style={{ marginTop: '30px' }}>
                 <Snackbar open={fileUpload} autoHideDuration={5000} onClose={imageUploadstatus} >
                     <Alert onClose={imageUploadstatus} severity="success">Image Updated Successfully</Alert>
                 </Snackbar>
@@ -126,14 +119,19 @@ const Profile = () => {
                                             onChange={imageUpload}
                                         />
                                     </Grid>
-                                    <Grid item xs={6} sm={3} style={{ display: 'grid', justifyContent: 'right', alignContent: 'center' }}>
+                                    <Grid item xs={4} sm={2} style={{ display: 'grid', justifyContent: 'right', alignContent: 'center' }}>
                                         <Button variant="outlined" color="secondary">
-                                            Delete
+                                            <DeleteIcon />
                                         </Button>
                                     </Grid>
-                                    <Grid item xs={6} sm={3} style={{ display: 'grid', justifyContent: 'left', alignContent: 'center' }}>
+                                    <Grid item xs={4} sm={2} style={{ display: 'grid', justifyContent: 'left', alignContent: 'center' }}>
                                         <Button variant="outlined" color="primary">
-                                            Update
+                                            <EditIcon />
+                                        </Button>
+                                    </Grid>
+                                    <Grid item xs={4} sm={2} style={{ display: 'grid', justifyContent: 'left', alignContent: 'center' }}>
+                                        <Button variant="outlined" color="secondary" onClick={logout}>
+                                            <ExitToAppIcon color="secondary" />
                                         </Button>
                                     </Grid>
                                 </Grid>
@@ -148,7 +146,7 @@ const Profile = () => {
                         <div>
                             <List >
                                 {
-                                    userList.map((name, index) => (
+                                    userList.filter(filterData => filterData.id !== userId).map((name, index) => (
                                         <ListItem key={index}>
                                             <ListItemAvatar>
                                                 <Avatar>
@@ -161,7 +159,7 @@ const Profile = () => {
                                             />
                                             <ListItemSecondaryAction>
                                                 <IconButton edge="end" aria-label="delete">
-                                                    <DeleteIcon onClick={particularPost} id={name.id} />
+                                                    <RemoveRedEye color="primary" onClick={particularPost} id={name.id} />
                                                 </IconButton>
                                             </ListItemSecondaryAction>
                                         </ListItem>

@@ -19,3 +19,8 @@ class UpdateStudent(BaseModel):
 class UpdatePassword(BaseModel):
     oldPassword: str
     newPassword: str
+
+
+class StudentLogin(BaseModel):
+    email: Optional[str] = "monster@gmail.com"
+    password: Optional[str] = ""

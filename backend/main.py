@@ -5,9 +5,9 @@ from typing import Optional
 from fastapi import FastAPI, File, UploadFile
 from pydantic import BaseModel
 import datetime
-from schemas.user import userEntity, usersEntity, userPassword
+from schemas.user import userEntity, usersEntity, userPassword, userLogin
 from fastapi.staticfiles import StaticFiles
-from models.Student import UpdateStudent, AddStudent, UpdatePassword
+from models.Student import UpdateStudent, AddStudent, UpdatePassword, StudentLogin
 from fastapi.middleware.cors import CORSMiddleware
 
 # initialize
@@ -48,7 +48,10 @@ async def fetch_all_student():
 
 @app.get("/student/{id}")
 async def fetch_one_student(id):
-    return userEntity(collection.find_one({"_id": ObjectId(id)}))
+    try:
+        return userEntity(collection.find_one({"_id": ObjectId(id)}))
+    except:
+        return {"data": "wrongId"}
 
 
 @app.post('/student')
@@ -109,3 +112,17 @@ def UpdatePassword(id, student: UpdatePassword):
         return {"data": "password updated"}
     else:
         return {"data": "wrong password"}
+
+
+@app.post('/student/login')
+def studentLogin(login: StudentLogin):
+    try:
+        data = userLogin(collection.find_one(
+            {"email": login.email}))
+        if data['password'] == login.password:
+            return {"data": data['id']}
+        else:
+            return {"data": "WrongPassword"}
+
+    except:
+        return {"data": "WrongEmail"}

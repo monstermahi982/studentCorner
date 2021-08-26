@@ -1,5 +1,5 @@
 import React from 'react'
-import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import Profile from './pages/Profile'
 import Register from './pages/Register'
 import Login from './pages/Login'
@@ -29,9 +29,9 @@ const App = () => {
             <Particular />
           </Route>
           <PrivateRouter path="/student" component={Profile}></PrivateRouter>
-          {/* <Route path="/student">
-          <Profile />
-        </Route> */}
+          <Route path="*">
+            <Login />
+          </Route>
         </Switch>
       </Router>
     </userContext.Provider>
