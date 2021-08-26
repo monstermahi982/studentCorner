@@ -4,27 +4,37 @@ import Profile from './pages/Profile'
 import Register from './pages/Register'
 import Login from './pages/Login'
 import Particular from './pages/Particular'
+import { initialState, reducer } from './useReducer'
+import PrivateRouter from './PrivateRouter';
+
+export const userContext = React.createContext()
 
 
 const App = () => {
-  return (
-    <Router>
 
-      <Switch>
-        <Route path="/login">
-          <Login />
-        </Route>
-        <Route path="/register">
-          <Register />
-        </Route>
-        <Route path="/student/:id">
-          <Particular />
-        </Route>
-        <Route path="/student">
+  const [state, dispatch] = React.useReducer(reducer, initialState)
+
+  return (
+    <userContext.Provider value={{ state, dispatch }}>
+      <Router>
+
+        <Switch>
+          <Route path="/login">
+            <Login />
+          </Route>
+          <Route path="/register">
+            <Register />
+          </Route>
+          <Route path="/student/:id">
+            <Particular />
+          </Route>
+          <PrivateRouter path="/student" component={Profile}></PrivateRouter>
+          {/* <Route path="/student">
           <Profile />
-        </Route>
-      </Switch>
-    </Router>
+        </Route> */}
+        </Switch>
+      </Router>
+    </userContext.Provider>
   )
 }
 

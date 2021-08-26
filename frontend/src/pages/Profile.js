@@ -26,7 +26,10 @@ import Typography from '@material-ui/core/Typography';
 import FolderIcon from '@material-ui/icons/Folder';
 import DeleteIcon from '@material-ui/icons/RemoveRedEye';
 import { useHistory } from "react-router-dom";
-
+import Alert from '@material-ui/lab/Alert';
+import Snackbar from '@material-ui/core/Snackbar';
+import MuiAlert from '@material-ui/lab/Alert';
+import LinearProgress from '@material-ui/core/LinearProgress';
 
 function generate(element) {
     return [0, 1, 2].map((value) =>
@@ -40,7 +43,13 @@ const Profile = () => {
     const [userList, setUserList] = React.useState([])
     const [data, setData] = React.useState('')
     const [image, setImage] = React.useState(false)
+    const [load, setLoad] = React.useState(false)
+    const [fileUpload, setFileUpload] = React.useState(false)
     let history = useHistory();
+
+    const imageUploadstatus = () => {
+        setFileUpload(!fileUpload)
+    }
 
     // getting all the profiles
     React.useEffect(async () => {
@@ -56,6 +65,7 @@ const Profile = () => {
     }, [image])
 
     const imageUpload = (e) => {
+        setLoad(true)
         const formData = new FormData()
         formData.append('file', e.target.files[0])
         fetch('http://localhost:8000/student/profile/6121f092b0a99b35de65334d', {
@@ -66,8 +76,13 @@ const Profile = () => {
             .then((data) => {
                 console.log(data);
                 setImage(!image)
+                setLoad(false)
+                imageUploadstatus()
             })
-            .catch((e) => console.log(e + "failed error"));
+            .catch((e) => {
+                console.log(e + "failed error")
+                setLoad(false)
+            });
     }
 
     const particularPost = async (e) => {
@@ -77,6 +92,10 @@ const Profile = () => {
     return (
         <>
             <Container style={{ marginTop: '20px' }}>
+                <Snackbar open={fileUpload} autoHideDuration={5000} onClose={imageUploadstatus} >
+                    <Alert onClose={imageUploadstatus} severity="success">Image Updated Successfully</Alert>
+                </Snackbar>
+
                 <Grid container border={1}>
                     <Grid item xs={12} sm={8}>
 
@@ -118,9 +137,9 @@ const Profile = () => {
                                         </Button>
                                     </Grid>
                                 </Grid>
+                                {load ? <LinearProgress /> : ""}
                             </Grid>
                         </Grid>
-
                     </Grid>
                     <Grid item xs={12} sm={4}>
                         <Typography variant="h6">
