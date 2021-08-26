@@ -36,19 +36,27 @@ const Profile = () => {
         setFileUpload(!fileUpload)
     }
 
-    // getting all the profiles
-    React.useEffect(async () => {
+    const getlistdata = async () => {
         const userData = await axios.get('http://localhost:8000/students')
         setUserList(userData.data)
-        return { userData }
+    }
+
+    const getprfiledata = async () => {
+        const profileData = await axios.get('http://localhost:8000/student/' + userId)
+        setData(profileData.data)
+    }
+
+    // getting all the profiles
+    React.useEffect(() => {
+        getlistdata()
+        return { getlistdata }
     }, [])
 
     // console.log(list);
     // fetching user profile
-    React.useEffect(async () => {
-        const profileData = await axios.get('http://localhost:8000/student/' + userId)
-        setData(profileData.data)
-        return { profileData }
+    React.useEffect(() => {
+        getprfiledata()
+        return { getprfiledata }
     }, [image])
 
     const imageUpload = (e) => {

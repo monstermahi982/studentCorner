@@ -23,24 +23,32 @@ const Particular = () => {
 
     const [data, setData] = React.useState('')
 
-    React.useEffect(async () => {
+    const getlistdata = async () => {
+        const userData = await axios.get('http://localhost:8000/students')
+        setUserList(userData.data)
+    }
+
+    const getprfiledata = async () => {
         const profileData = await axios.get('http://localhost:8000/student/' + id.id)
         if (profileData.data.data === "wrongId") {
             history.push('/')
             return
         }
         setData(profileData.data)
-        return { profileData }
+    }
+
+    React.useEffect(() => {
+        getprfiledata()
+        return { getprfiledata }
     }, [change])
 
     // getting all the profiles
-    React.useEffect(async () => {
-        const userData = await axios.get('http://localhost:8000/students')
-        setUserList(userData.data)
-        return { userData }
+    React.useEffect(() => {
+        getlistdata()
+        return { getlistdata }
     }, [])
 
-    const particularPost = async (e) => {
+    const particularPost = (e) => {
         history.push('/student/' + e.target.id)
         setChange(!change)
     }
