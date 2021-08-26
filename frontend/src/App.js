@@ -17,10 +17,10 @@ const App = () => {
         <Route path="/register">
           <Register />
         </Route>
-        <Route path="/:id">
+        <Route path="/student/:id">
           <Particular />
         </Route>
-        <Route path="/">
+        <Route path="/student">
           <Profile />
         </Route>
       </Switch>
