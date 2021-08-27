@@ -1,4 +1,6 @@
 from pymongo import MongoClient
+from starlette.applications import Starlette
+from starlette.responses import HTMLResponse
 
 client = MongoClient('localhost', 27017)
 

@@ -7,7 +7,7 @@ class AddStudent(BaseModel):
     email: str
     password: str
     gender: str
-    image: Optional[str] = ""
+    image: Optional[str] = "static/static_image/user.jpg"
 
 
 class UpdateStudent(BaseModel):

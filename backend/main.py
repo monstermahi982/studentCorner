@@ -2,7 +2,7 @@ import os
 from bson.objectid import ObjectId
 from pymongo import MongoClient
 from typing import Optional
-from fastapi import FastAPI, File, UploadFile, Request
+from fastapi import FastAPI, File, UploadFile, Request, Response
 from pydantic import BaseModel
 import datetime
 from schemas.user import userEntity, usersEntity, userPassword, userLogin
@@ -11,6 +11,8 @@ from models.Student import UpdateStudent, AddStudent, UpdatePassword, StudentLog
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.templating import Jinja2Templates
 from fastapi.responses import HTMLResponse
+from starlette.responses import RedirectResponse
+
 
 # initialize
 app = FastAPI()
@@ -34,7 +36,7 @@ app.add_middleware(
 
 # file uploads
 app.mount("/static", StaticFiles(directory="static"), name="static")
-path = "/home/mahesh/projects/fastapi/app1/backend/static"
+path = "/home/mahesh/projects/fastapi/app1/backend/static/images"
 
 # html files
 templates = Jinja2Templates(directory="templates")
@@ -88,7 +90,7 @@ async def UpdateStudentProfile(id, file: UploadFile = File(...)):
         f.close()
     collection.find_one_and_update({"_id": ObjectId(id)}, {
         "$set": {
-            "image": "static/"+file.filename
+            "image": "static/images/"+file.filename
         }
     })
     return userEntity(collection.find_one({"_id": ObjectId(id)}))
@@ -139,3 +141,18 @@ def studentLogin(login: StudentLogin):
 
     except:
         return {"data": "WrongEmail"}
+
+
+class UnicornException(Exception):
+    def __init__(self, name: str):
+        self.name = name
+
+
+@app.get("/login")
+@app.get("/register")
+@app.get("/forget-password")
+@app.get("/student")
+async def redirect():
+    url = app.url_path_for("home")
+    response = RedirectResponse(url=url)
+    return response
