@@ -12,6 +12,9 @@ import Avatar from '@material-ui/core/Avatar';
 import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
 import RemoveRedEye from '@material-ui/icons/RemoveRedEye';
+import AccountCircleOutlinedIcon from '@material-ui/icons/AccountCircleOutlined';
+import Button from '@material-ui/core/Button';
+
 
 
 const Particular = () => {
@@ -53,6 +56,10 @@ const Particular = () => {
         setChange(!change)
     }
 
+    const toprofile = () => {
+        history.push('/student')
+    }
+
     return (
         <>
             <Container style={{ marginTop: '30px' }}>
@@ -78,9 +85,14 @@ const Particular = () => {
                         </Grid>
                     </Grid>
                     <Grid item xs={12} sm={4}>
-                        <Typography variant="h6">
-                            OTHER STUDENTS :=
-                        </Typography>
+                        <Grid container>
+                            <Grid item xs={8} sm={8}><Typography variant="h6">OTHER STUDENTS :=</Typography></Grid>
+                            <Grid item xs={4} sm={4}>
+                                <Button onClick={toprofile} color="secondary">
+                                    <AccountCircleOutlinedIcon />
+                                </Button>
+                            </Grid>
+                        </Grid>
                         <div>
                             <List >
                                 {

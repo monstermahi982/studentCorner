@@ -3,14 +3,13 @@ import Container from '@material-ui/core/Container'
 import Grid from '@material-ui/core/Grid'
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
-import { Link } from 'react-router-dom'
 import axios from 'axios'
 import Alert from '@material-ui/lab/Alert';
 import Snackbar from '@material-ui/core/Snackbar';
 import { useHistory } from "react-router-dom";
 import LinearProgress from '@material-ui/core/LinearProgress';
 import { userContext } from '../App'
-
+import ButtonGroup from '@material-ui/core/ButtonGroup';
 
 const Login = () => {
     const [email, setEmail] = React.useState('')
@@ -29,6 +28,14 @@ const Login = () => {
         }
     })
 
+    const toregister = () => {
+        history.push('/register')
+    }
+
+
+    const toforget = () => {
+        history.push('/forget-password')
+    }
 
     const emailHandle = () => {
         setEmailCheck(!emailCheck)
@@ -61,7 +68,7 @@ const Login = () => {
     // setTimeout(function () { alert("Hello"); }, 3000);
     return (
         <>
-            <Container>
+            <Container style={{ marginTop: '30px' }}>
 
                 <Snackbar open={emailCheck} autoHideDuration={2000} onClose={emailHandle} >
                     <Alert onClose={emailHandle} severity="error">Email is WRONG</Alert>
@@ -71,11 +78,11 @@ const Login = () => {
                 </Snackbar>
 
                 <Grid container border={1}>
-                    <Grid item xs={0} sm={3}></Grid>
+                    <Grid item xs={false} sm={3}></Grid>
                     <Grid item xs={12} sm={6}>
-                        <h2 style={{ textAlign: 'center' }}>LOGIN YOUR ACCOUNT</h2>
+                        <h2 style={{ textAlign: 'center' }}>LOGIN TO YOUR ACCOUNT</h2>
                         <Grid container>
-                            <Grid xs={12} sm={6} style={{ display: 'grid', justifyContent: 'center', alignContent: 'center' }}>
+                            <Grid item xs={12} sm={6} style={{ display: 'grid', justifyContent: 'center', alignContent: 'center' }}>
                                 <TextField
                                     error={false}
                                     id="email"
@@ -85,7 +92,7 @@ const Login = () => {
                                     onChange={(e) => setEmail(e.target.value)}
                                 />
                             </Grid>
-                            <Grid xs={12} sm={6} style={{ display: 'grid', justifyContent: 'center', alignContent: 'center' }}>
+                            <Grid item xs={12} sm={6} style={{ display: 'grid', justifyContent: 'center', alignContent: 'center' }}>
                                 <TextField
                                     error={false}
                                     id="password"
@@ -98,22 +105,18 @@ const Login = () => {
                         </Grid>
                         <br />
 
-                        <Grid container>
-                            <Grid item xs={6} sm={6} style={{ display: 'grid', justifyContent: 'right', alignContent: 'center' }}>
-                                <Link to="/register"><Button variant="outlined" color="secondary">
-                                    Register ?
-                                </Button></Link>
-                            </Grid>
-                            <Grid item xs={6} sm={6} style={{ display: 'grid', justifyContent: 'left', alignContent: 'center' }}>
-                                <Button variant="outlined" color="primary" onClick={loginUser}>
-                                    Login
-                                </Button>
-                            </Grid>
+                        <Grid container style={{ display: 'grid', justifyContent: 'center', alignContent: 'center' }}>
+                            <ButtonGroup color="primary" aria-label="large outlined primary button group">
+                                <Button onClick={toregister} color="secondary">Register</Button>
+                                <Button onClick={loginUser}>Login</Button>
+                                <Button onClick={toforget} color="secondary">RESET Password</Button>
+                            </ButtonGroup>
                         </Grid>
+
                         <br />
                         {load ? <LinearProgress /> : ""}
                     </Grid>
-                    <Grid item xs={0} sm={3}></Grid>
+                    <Grid item xs={false} sm={3}></Grid>
                 </Grid>
             </Container>
         </>

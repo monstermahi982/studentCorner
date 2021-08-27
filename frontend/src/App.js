@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import Profile from './pages/Profile'
 import Register from './pages/Register'
 import Login from './pages/Login'
+import ForgetPassword from './pages/ForgetPassword'
 import Particular from './pages/Particular'
 import { initialState, reducer } from './useReducer'
 import PrivateRouter from './PrivateRouter';
@@ -21,6 +22,9 @@ const App = () => {
         <Switch>
           <Route path="/login">
             <Login />
+          </Route>
+          <Route path="/forget-password">
+            <ForgetPassword />
           </Route>
           <Route path="/register">
             <Register />

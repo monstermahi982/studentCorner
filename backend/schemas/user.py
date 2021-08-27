@@ -10,6 +10,7 @@ def userEntity(item) -> dict:
 
 def userPassword(item) -> dict:
     return {
+        "id": str(item['_id']),
         "password": item['password']
     }
 

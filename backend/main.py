@@ -100,18 +100,20 @@ async def create_upload_file(file: UploadFile = File(...)):
     return {"filename": "static/"+file.filename}
 
 
-@app.post('/updatepassword/{id}')
-def UpdatePassword(id, student: UpdatePassword):
-    data = userPassword(collection.find_one({"_id": ObjectId(id)}))
-    if(data['password'] == student.oldPassword):
-        collection.find_one_and_update({"_id": ObjectId(id)}, {
+@app.post('/updatepassword/')
+def UpdatePassword(student: UpdatePassword):
+    try:
+        data = userPassword(collection.find_one(
+            {"password": student.oldPassword}))
+        print(data)
+        collection.find_one_and_update({"_id": ObjectId(data['id'])}, {
             "$set": {
                 "password": student.newPassword
             }
         })
         return {"data": "password updated"}
-    else:
-        return {"data": "wrong password"}
+    except:
+        return {"data": "notFound"}
 
 
 @app.post('/student/login')
