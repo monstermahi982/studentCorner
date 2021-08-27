@@ -13,7 +13,6 @@ class AddStudent(BaseModel):
 class UpdateStudent(BaseModel):
     name: Optional[str]
     email: Optional[str]
-    gender: Optional[str]
 
 
 class UpdatePassword(BaseModel):

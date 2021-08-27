@@ -17,6 +17,7 @@ import Button from '@material-ui/core/Button';
 
 
 
+
 const Particular = () => {
     let id = useParams();
     let history = useHistory()
@@ -42,7 +43,7 @@ const Particular = () => {
 
     React.useEffect(() => {
         getprfiledata()
-        return { getprfiledata }
+        return getprfiledata
     }, [change])
 
     // getting all the profiles

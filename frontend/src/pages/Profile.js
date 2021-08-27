@@ -21,7 +21,15 @@ import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import { userContext } from '../App'
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import Slide from '@material-ui/core/Slide';
 
+const Transition = React.forwardRef(function Transition(props, ref) {
+    return <Slide direction="up" ref={ref} {...props} />;
+});
 
 const Profile = () => {
     const [userList, setUserList] = React.useState([])
@@ -32,6 +40,20 @@ const Profile = () => {
     let history = useHistory();
     const { dispatch } = React.useContext(userContext)
     const userId = sessionStorage.getItem('userId')
+    const [open, setOpen] = React.useState(false);
+    const [name, setname] = React.useState('')
+    const [email, setEmail] = React.useState('')
+    const [updateProfileCheck, setUpdateProfileCheck] = React.useState(false)
+
+
+    const handleClickOpen = () => {
+        setOpen(true);
+    };
+
+    const handleClose = () => {
+        setOpen(false);
+    };
+
     const imageUploadstatus = () => {
         setFileUpload(!fileUpload)
     }
@@ -44,6 +66,8 @@ const Profile = () => {
     const getprfiledata = async () => {
         const profileData = await axios.get('http://localhost:8000/student/' + userId)
         setData(profileData.data)
+        setname(profileData.data.name)
+        setEmail(profileData.data.email)
     }
 
     // getting all the profiles
@@ -57,7 +81,7 @@ const Profile = () => {
     React.useEffect(() => {
         getprfiledata()
         return { getprfiledata }
-    }, [image])
+    }, [image, load])
 
     const imageUpload = (e) => {
         setLoad(true)
@@ -90,11 +114,42 @@ const Profile = () => {
         setLoad(false)
     }
 
+    const updateProfile = async () => {
+        setLoad(true)
+        if (email === '' || name === '') {
+            alert('file')
+            setOpen(false)
+            setLoad(false)
+            return
+        }
+        await axios.put('http://localhost:8000/student/' + userId, {
+            "name": name,
+            "email": email
+        })
+        setOpen(false);
+        profileUpdate()
+        setLoad(false)
+
+    }
+
+    const deleteProfile = async () => {
+        setLoad(true)
+        await axios.delete('http://localhost:8000/student/' + userId)
+        setLoad(false)
+        logout()
+    }
+
+    const profileUpdate = () => {
+        setUpdateProfileCheck(!updateProfileCheck)
+    }
     return (
         <>
             <Container style={{ marginTop: '30px' }}>
                 <Snackbar open={fileUpload} autoHideDuration={5000} onClose={imageUploadstatus} >
                     <Alert onClose={imageUploadstatus} severity="success">Image Updated Successfully</Alert>
+                </Snackbar>
+                <Snackbar open={updateProfileCheck} autoHideDuration={5000} onClose={profileUpdate} >
+                    <Alert onClose={profileUpdate} severity="success">Profile Updated Successfully</Alert>
                 </Snackbar>
 
                 <Grid container border={1}>
@@ -128,14 +183,56 @@ const Profile = () => {
                                         />
                                     </Grid>
                                     <Grid item xs={4} sm={2} style={{ display: 'grid', justifyContent: 'right', alignContent: 'center' }}>
-                                        <Button variant="outlined" color="secondary">
+                                        <Button variant="outlined" color="secondary" onClick={deleteProfile}>
                                             <DeleteIcon />
                                         </Button>
                                     </Grid>
                                     <Grid item xs={4} sm={2} style={{ display: 'grid', justifyContent: 'left', alignContent: 'center' }}>
-                                        <Button variant="outlined" color="primary">
+                                        <Button variant="outlined" color="primary" onClick={handleClickOpen}>
                                             <EditIcon />
                                         </Button>
+                                        <Dialog
+                                            open={open}
+                                            TransitionComponent={Transition}
+                                            keepMounted
+                                            onClose={handleClose}
+                                            aria-labelledby="alert-dialog-slide-title"
+                                            aria-describedby="alert-dialog-slide-description"
+                                        >
+                                            <DialogTitle id="alert-dialog-slide-title">{data.name + " Update Your Profile"}</DialogTitle>
+                                            <DialogContent>
+                                                <Grid container>
+                                                    <Grid item xs={12} sm={6} style={{ display: 'grid', justifyContent: 'center', alignContent: 'center' }}>
+                                                        <TextField
+                                                            error={false}
+                                                            id="email"
+                                                            label="Email"
+                                                            variant="outlined"
+                                                            value={email}
+                                                            onChange={(e) => setEmail(e.target.value)}
+                                                        />
+                                                    </Grid>
+                                                    <Grid item xs={12} sm={6} style={{ display: 'grid', justifyContent: 'center', alignContent: 'center' }}>
+                                                        <TextField
+                                                            error={false}
+                                                            id="name"
+                                                            label="name"
+                                                            variant="outlined"
+                                                            value={name}
+                                                            onChange={(e) => setname(e.target.value)}
+                                                        />
+                                                    </Grid>
+                                                </Grid>
+                                            </DialogContent>
+                                            <DialogActions>
+                                                <Button onClick={handleClose} color="primary">
+                                                    close
+                                                </Button>
+                                                <Button onClick={updateProfile} color="primary">
+                                                    update
+                                                </Button>
+                                            </DialogActions>
+                                        </Dialog>
                                     </Grid>
                                     <Grid item xs={4} sm={2} style={{ display: 'grid', justifyContent: 'left', alignContent: 'center' }}>
                                         <Button variant="outlined" color="secondary" onClick={logout}>
