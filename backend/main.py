@@ -2,13 +2,15 @@ import os
 from bson.objectid import ObjectId
 from pymongo import MongoClient
 from typing import Optional
-from fastapi import FastAPI, File, UploadFile
+from fastapi import FastAPI, File, UploadFile, Request
 from pydantic import BaseModel
 import datetime
 from schemas.user import userEntity, usersEntity, userPassword, userLogin
 from fastapi.staticfiles import StaticFiles
 from models.Student import UpdateStudent, AddStudent, UpdatePassword, StudentLogin
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.templating import Jinja2Templates
+from fastapi.responses import HTMLResponse
 
 # initialize
 app = FastAPI()
@@ -34,6 +36,9 @@ app.add_middleware(
 app.mount("/static", StaticFiles(directory="static"), name="static")
 path = "/home/mahesh/projects/fastapi/app1/backend/static"
 
+# html files
+templates = Jinja2Templates(directory="templates")
+
 # database connection
 client = MongoClient('localhost', 27017)
 db = client['studentCorner']
@@ -41,6 +46,12 @@ collection = db['student']
 
 
 # routes
+
+@app.get("/", response_class=HTMLResponse)
+async def home(request: Request):
+    return templates.TemplateResponse("index.html", {"request": request})
+
+
 @app.get("/students")
 async def fetch_all_student():
     return usersEntity(collection.find())
