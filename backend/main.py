@@ -42,8 +42,7 @@ path = "/home/mahesh/projects/fastapi/app1/backend/static/images"
 templates = Jinja2Templates(directory="templates")
 
 # database connection
-URL = "mongodb+srv://monstermahi:monstermahi@cluster0.cf4ii.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"
-client = MongoClient(URL)
+client = MongoClient('localhost', 27017)
 db = client['studentCorner']
 collection = db['student']
 
@@ -119,6 +118,7 @@ def UpdatePassword(student: UpdatePassword):
     try:
         data = userPassword(collection.find_one(
             {"password": student.oldPassword}))
+        print(data)
         collection.find_one_and_update({"_id": ObjectId(data['id'])}, {
             "$set": {
                 "password": student.newPassword
