@@ -1,2 +1,2 @@
-# studentCorner     <a href="https://student-katta.herokuapp.com/">Link</a>
+<a href="https://student-katta.herokuapp.com/"># Student Corner</a>
 Student Chill time zone 
