@@ -1,7 +1,7 @@
 
 # Student katta :-
 
-A small PROFILE checking web application for users like mini linkedin. 
+A small PROFILE checking web application for users like mini linkedin, students can check each others profile.
 
 
 ## Demo
