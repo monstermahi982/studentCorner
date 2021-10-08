@@ -5,6 +5,7 @@ from typing import Optional
 from fastapi import FastAPI, File, UploadFile, Request, Response
 from pydantic import BaseModel
 import datetime
+import numpy as np
 from schemas.user import userEntity, usersEntity, userPassword, userLogin
 from fastapi.staticfiles import StaticFiles
 from models.Student import UpdateStudent, AddStudent, UpdatePassword, StudentLogin
