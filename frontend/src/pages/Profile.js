@@ -163,13 +163,13 @@ const Profile = () => {
                                 <h2 style={{ textAlign: 'center', textTransform: 'uppercase' }}>{data.name}</h2>
                                 <Grid container>
                                     <Grid item xs={6} sm={6}>
-                                        <h4 style={{ textAlign: 'center' }}>Gender :- {data.gender}</h4>
+                                        <h3 style={{ textAlign: 'center' }}>Gender :- {data.gender}</h3>
                                     </Grid>
                                     <Grid item xs={6} sm={6}>
-                                        <h4 style={{ textAlign: 'center' }}>Date :- 12/3/2000</h4>
+                                        <h3 style={{ textAlign: 'center' }}>Date :- 12/3/2000</h3>
                                     </Grid>
                                 </Grid>
-                                <h3 style={{ textAlign: 'center' }}>Email :- {data.email}</h3>
+                                <h2 style={{ textAlign: 'center' }}>Email :- {data.email}</h2>
                                 <Grid container>
                                     <Grid item xs={12} sm={6}>
                                         <TextField
